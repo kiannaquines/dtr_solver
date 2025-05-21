@@ -1,13 +1,8 @@
 import pandas as pd
-from matplotlib import pyplot as plt
-import seaborn as sns
 
-df = pd.read_csv('/content/drive/MyDrive/Kian_Jearard_Naquines_DTR - Kian_Jearard_Naquines-Final.csv')
-df.head(50)
-
+df = pd.read_csv('Attendance.csv')
 df['DateTime'] = pd.to_datetime(df['Time'], format='%d/%m/%Y %H:%M')
 df[['Person ID','Name','DateTime','Attendance Status','Attendance Check Point','Custom Name','Data Source']]
-
 df['Date'] = df['DateTime'].dt.date
 transformed_df = df[['Person ID','Name','DateTime','Attendance Status','Attendance Check Point','Custom Name','Data Source','Date']]
 
@@ -42,47 +37,6 @@ def calculate_total_hours(group_data):
     })
 
 result = transformed_df.groupby(['Date']).apply(calculate_total_hours).reset_index()
-result['Total Hours'].plot(kind='line', figsize=(8, 4), title='Total Hours')
-plt.gca().spines[['top', 'right']].set_visible(False)
-
-result['Afternoon Hours'].plot(kind='line', figsize=(8, 4), title='Afternoon Hours')
-plt.gca().spines[['top', 'right']].set_visible(False)
-
-result['Morning Hours'].plot(kind='line', figsize=(8, 4), title='Morning Hours')
-plt.gca().spines[['top', 'right']].set_visible(False)
-
-
-def _plot_series(series, series_name, series_index=0):
-  palette = list(sns.palettes.mpl_palette('Dark2'))
-  xs = series['Date']
-  ys = series['Afternoon Hours']
-
-  plt.plot(xs, ys, label=series_name, color=palette[series_index % len(palette)])
-
-fig, ax = plt.subplots(figsize=(10, 5.2), layout='constrained')
-df_sorted = result.sort_values('Date', ascending=True)
-_plot_series(df_sorted, '')
-sns.despine(fig=fig, ax=ax)
-plt.xlabel('Date')
-_ = plt.ylabel('Afternoon Hours')
-
-
-def _plot_series(series, series_name, series_index=0):
-  palette = list(sns.palettes.mpl_palette('Dark2'))
-  xs = series['Date']
-  ys = series['Morning Hours']
-
-  plt.plot(xs, ys, label=series_name, color=palette[series_index % len(palette)])
-
-fig, ax = plt.subplots(figsize=(10, 5.2), layout='constrained')
-df_sorted = result.sort_values('Date', ascending=True)
-_plot_series(df_sorted, '')
-sns.despine(fig=fig, ax=ax)
-plt.xlabel('Date')
-_ = plt.ylabel('Morning Hours')
-
 
 total_hours_calculated = result['Total Hours'].sum()
-print(f"OJT Total Hours: {total_hours_calculated} hours")
-remaining_hours_calculated = 486 - total_hours_calculated
-print(f"OJT Remaining Hours: {remaining_hours_calculated} hours")
+print(f"OJT Total Hours: {total_hours_calculated:.2f} hours")
