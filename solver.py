@@ -28,15 +28,15 @@ def calculate_total_hours(group_data):
                 pass
 
     return pd.Series({
-        'Person': person_id,
+        # 'Person': person_id,
         'Name': name,
-        'Department': department,
+        # 'Department': department,
         'Morning Hours': round(morning, 2) if morning else None,
         'Afternoon Hours': round(afternoon, 2) if afternoon else None,
         'Total Hours': round(morning + afternoon, 2) if morning or afternoon else None
     })
 
 result = transformed_df.groupby(['Date']).apply(calculate_total_hours).reset_index()
-
+result.to_csv('final_hours_of_ojt.csv', index=False)
 total_hours_calculated = result['Total Hours'].sum()
 print(f"OJT Total Hours: {total_hours_calculated:.2f} hours")
